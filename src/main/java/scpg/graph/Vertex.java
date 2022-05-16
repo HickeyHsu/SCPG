@@ -1,11 +1,12 @@
 package scpg.graph;
 
 import de.fraunhofer.aisec.cpg.graph.Node;
+import de.fraunhofer.aisec.cpg.graph.declarations.TranslationUnitDeclaration;
 import de.fraunhofer.aisec.cpg.graph.declarations.TypedefDeclaration;
 import de.fraunhofer.aisec.cpg.sarif.PhysicalLocation;
 import org.parboiled.common.StringUtils;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,9 +27,11 @@ public class Vertex extends AbstractVertex {
     private boolean isInferred = false;
     private boolean isImplicit = false;
     private int argumentIndex = 0;
+    private int line;
     private String location;
     private String type;
     private String building;
+    private List<Vertex> astVertices=new ArrayList<>();
     public Vertex(Node node) {
         this.name= StringUtils.escape(node.getName());
         this.code= StringUtils.escape(node.getCode());
@@ -40,9 +43,20 @@ public class Vertex extends AbstractVertex {
         this.typedefs=node.getTypedefs();
         this.location=PhysicalLocation.locationLink(node.getLocation());
         this.type=node.getClass().getSimpleName();
+        if(location=="unknown"){
+            this.line=0;
+        }else{
+            this.line=node.getLocation().getRegion().getStartLine();
+        }
+
+        if(node.getClass().equals(TranslationUnitDeclaration.class)){
+            this.code=this.file;
+        }
 
     }
-
+    public void addAstChild(Vertex astV){
+        astVertices.add(astV);
+    }
     public long getId() {
         return id;
     }
@@ -137,6 +151,18 @@ public class Vertex extends AbstractVertex {
 
     public void setNextDFG(Set<Node> nextDFG) {
         this.nextDFG = nextDFG;
+    }
+
+    public List<Vertex> getAstVertices() {
+        return astVertices;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
     }
 
     public Set<TypedefDeclaration> getTypedefs() {

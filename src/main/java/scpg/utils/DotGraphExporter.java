@@ -49,36 +49,38 @@ public class DotGraphExporter {
         final Attribute fillColor = DefaultAttribute.createAttribute("white");
         result.put("location", DefaultAttribute.createAttribute(String.valueOf(component.getLocation())));
 //        result.put("label", DefaultAttribute.createAttribute(component.getLocation()+":"+component.getCode()));
-        result.put("label", DefaultAttribute.createAttribute(component.getCode()));
+        result.put("label", DefaultAttribute.createAttribute(component.getLine()+":"+component.getCode()));
 //        result.put("name", DefaultAttribute.createAttribute(component.getName()));
         result.put("type", DefaultAttribute.createAttribute(component.getType()));
         result.put("id", DefaultAttribute.createAttribute(component.getId()));
-        result.put("code", DefaultAttribute.createAttribute(component.getCode()));
+        result.put("line", DefaultAttribute.createAttribute(component.getLine()));
+//        result.put("code", DefaultAttribute.createAttribute(component.getCode()));
         result.put("building", DefaultAttribute.createAttribute(component.getBuilding()));
-//        if (fillColor != null) {
-//            result.put("style", DefaultAttribute.createAttribute("filled"));
-//            result.put("fillcolor", DefaultAttribute.createAttribute(component.getFillColor()));
-//        }else {
-//            result.put("style", DefaultAttribute.createAttribute("filled"));
-//            result.put("fillcolor", fillColor);
-//        }
-//        if (component.getType() != null) {
-//            switch (component.getType()) {
-//                default:
-//                    result.put("fontname", DefaultAttribute.createAttribute("helvetica"));
-//                    result.put("shape", DefaultAttribute.createAttribute("oval"));
-//                    break;
-//            }
-//        }
+        result.put("style", DefaultAttribute.createAttribute("filled"));
+        if (component.getBuilding()=="CFG") {
+            result.put("fillcolor", DefaultAttribute.createAttribute("yellow"));
+        }else {
+            result.put("fillcolor", fillColor);
+        }
+        if (component.getType() != null) {
+            switch (component.getType()) {
+                default:
+                    result.put("fontname", DefaultAttribute.createAttribute("helvetica"));
+                    result.put("shape", DefaultAttribute.createAttribute("oval"));
+                    break;
+            }
+        }
         return result;
     }
     public static Map<String, Attribute> getComponentAttributes(final CPGEdge component) {
         final Map<String, Attribute> result = new HashMap<>();
         if (component.getType() != null) {
+            result.put("edgeType", DefaultAttribute.createAttribute(component.getType().label));
             switch (component.getType()) {
                 case CFG:
                     result.put("splines", DefaultAttribute.createAttribute(true));
                     result.put("color", DefaultAttribute.createAttribute("green"));
+
                     break;
                 case DDG_D:
                     result.put("style", DefaultAttribute.createAttribute("dashed"));
@@ -86,7 +88,7 @@ public class DotGraphExporter {
                     break;
                 case DDG_U:
                     result.put("style", DefaultAttribute.createAttribute("dashed"));
-                    result.put("color", DefaultAttribute.createAttribute("yellow"));
+                    result.put("color", DefaultAttribute.createAttribute("orange"));
                     break;
                 default:
                     break;

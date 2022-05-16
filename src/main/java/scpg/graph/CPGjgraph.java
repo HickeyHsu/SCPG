@@ -21,10 +21,10 @@ public class CPGjgraph extends DirectedPseudograph<Vertex, CPGEdge> {
     public boolean addVertex(Vertex v) {
         if (v == null) {
             throw new NullPointerException();
-        } else if (v.getCode().isEmpty()) {
+        } else if (v.getCode().isEmpty()&&v.getLocation().equals("unknown")) {
             return false;
-        } else if (v.getLocation().equals("unknown")) {
-            return false;
+//        } else if () {
+//            return false;
         } else {
             boolean added=super.addVertex(v);
             return added;
