@@ -27,6 +27,7 @@ public class Vertex extends AbstractVertex {
     private boolean isImplicit = false;
     private int argumentIndex = 0;
     private String location;
+    private String type;
     public Vertex(Node node) {
         this.name= StringUtils.escape(node.getName());
         this.code= StringUtils.escape(node.getCode());
@@ -37,6 +38,8 @@ public class Vertex extends AbstractVertex {
         this.argumentIndex= node.getArgumentIndex();
         this.typedefs=node.getTypedefs();
         this.location=PhysicalLocation.locationLink(node.getLocation());
+        this.type=node.getClass().getSimpleName();
+
     }
 
     public long getId() {
@@ -173,5 +176,13 @@ public class Vertex extends AbstractVertex {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

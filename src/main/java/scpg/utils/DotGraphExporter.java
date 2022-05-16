@@ -50,6 +50,7 @@ public class DotGraphExporter {
         result.put("location", DefaultAttribute.createAttribute(String.valueOf(component.getLocation())));
         result.put("label", DefaultAttribute.createAttribute(component.getCode()));
         result.put("name", DefaultAttribute.createAttribute(component.getName()));
+        result.put("type", DefaultAttribute.createAttribute(component.getType()));
 //        if (fillColor != null) {
 //            result.put("style", DefaultAttribute.createAttribute("filled"));
 //            result.put("fillcolor", DefaultAttribute.createAttribute(component.getFillColor()));

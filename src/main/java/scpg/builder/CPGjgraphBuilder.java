@@ -24,72 +24,71 @@ public class CPGjgraphBuilder {
     }
 
     public void build() {
-        Map<String,Vertex> allVertexs = new LinkedHashMap<>();
-        Map<Node,String> ctrlNodes = new LinkedHashMap<>();
+        Map<Integer,Vertex> allVertexs = new LinkedHashMap<>();
+        Map<Node,Integer> ctrlNodes = new LinkedHashMap<>();
 //        Map<String,Node> dataNodes = new LinkedHashMap<>();
         Set<PropertyEdge<Node>> allCFEdges = new HashSet<>();
         int nodeCounter = 1;
+//        System.out.println(originCPG.getNodes());
         Iterator<Node> origNode = nodeIterator(originCPG);
         while(origNode.hasNext()){
             Node node = origNode.next();
             Vertex v =new Vertex(node);
-            v.setId(nodeCounter);
+            int id=node.hashCode();
+            v.setId(id);
             boolean added=cpg.addVertex(v);
             if(added == false){
                 continue;
             }
             nodeCounter++;
-            String name = "v"+String.valueOf(nodeCounter);
-            ctrlNodes.put(node, name);
-            allVertexs.put(name,v);
+//            String name = "v"+String.valueOf(nodeCounter);
+            ctrlNodes.put(node, id);
+            allVertexs.put(id,v);
 
             List<PropertyEdge<Node>> prevEOGEdges = node.getPrevEOGEdges();
             List<PropertyEdge<Node>> nextEOGEdges = node.getNextEOGEdges();
             allCFEdges.addAll(prevEOGEdges);
             allCFEdges.addAll(nextEOGEdges);
             //抽象语法树
-//            Iterator<Node> astChildren=node.getAstChildren().iterator();
-//            while (astChildren.hasNext()) {
-//                Node astNode = astChildren.next();
-//                Vertex astVertex = new Vertex(astNode);
-//                if(cpg.addVertex(astVertex)==true){
-//                    CPGEdge edge = new CPGEdge(CPGEdge.Type.AST);
-//                    edge.setStartAndEnd(v, astVertex);
-//                    edge.setId(Objects.hash(node, astNode, "AST"));
-//                    cpg.addEdge(v, astVertex, edge);
-//                }
-//            }
+            Iterator<Node> astChildren=node.getAstChildren().iterator();
+            while (astChildren.hasNext()) {
+                Node astNode = astChildren.next();
+                Vertex astVertex = new Vertex(astNode);
+                if(cpg.addVertex(astVertex)==true){
+                    CPGEdge edge = new CPGEdge(CPGEdge.Type.AST);
+                    edge.setStartAndEnd(v, astVertex);
+                    edge.setId(Objects.hash(node, astNode, "AST"));
+                    cpg.addEdge(v, astVertex, edge);
+                }
+            }
             //数据流边
             Iterator<Node> prevDFGs=node.getPrevDFG().iterator();
             Iterator<Node> nextDFGs=node.getNextDFG().iterator();
-            //INCOMING
-            while (prevDFGs.hasNext()) {
-                Node prevDFG= prevDFGs.next();
-                Vertex prevDFGv = new Vertex(prevDFG);
-                if(node.equals(prevDFG)){
-                    continue;
-                }
-                if(cpg.addVertex(prevDFGv)) {
-                    CPGEdge edge = new CPGEdge(CPGEdge.Type.DDG_U);
-                    edge.setStartAndEnd(v, prevDFGv);
-                    edge.setId(Objects.hash(node, prevDFG));
-                    cpg.addEdge(v, prevDFGv, edge);
-                }
-            }
-            //OUTGOING
-            while (nextDFGs.hasNext()) {
-                Node nextDFG= nextDFGs.next();
-                Vertex nextDFGv = new Vertex(nextDFG);
-                if(cpg.addVertex(nextDFGv)) {
-                    CPGEdge edge = new CPGEdge(CPGEdge.Type.DDG_D);
-                    edge.setStartAndEnd(v, nextDFGv);
-                    edge.setId(Objects.hash(node, nextDFG));
-                    cpg.addEdge(v, nextDFGv, edge);
-                }
-            }
-
-
-
+//            //INCOMING
+//            while (prevDFGs.hasNext()) {
+//                Node prevDFG= prevDFGs.next();
+//                Vertex prevDFGv = new Vertex(prevDFG);
+//                if(node.equals(prevDFG)){
+//                    continue;
+//                }
+//                if(cpg.addVertex(prevDFGv)) {
+//                    CPGEdge edge = new CPGEdge(CPGEdge.Type.DDG_U);
+//                    edge.setStartAndEnd(v, prevDFGv);
+//                    edge.setId(Objects.hash(node, prevDFG));
+//                    cpg.addEdge(v, prevDFGv, edge);
+//                }
+//            }
+//            //OUTGOING
+//            while (nextDFGs.hasNext()) {
+//                Node nextDFG= nextDFGs.next();
+//                Vertex nextDFGv = new Vertex(nextDFG);
+//                if(cpg.addVertex(nextDFGv)) {
+//                    CPGEdge edge = new CPGEdge(CPGEdge.Type.DDG_D);
+//                    edge.setStartAndEnd(v, nextDFGv);
+//                    edge.setId(Objects.hash(node, nextDFG));
+//                    cpg.addEdge(v, nextDFGv, edge);
+//                }
+//            }
         }
         //控制流边
         Iterator<PropertyEdge<Node>> allEdgeIterator = allCFEdges.iterator();
