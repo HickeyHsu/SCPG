@@ -28,6 +28,7 @@ public class Vertex extends AbstractVertex {
     private int argumentIndex = 0;
     private String location;
     private String type;
+    private String building;
     public Vertex(Node node) {
         this.name= StringUtils.escape(node.getName());
         this.code= StringUtils.escape(node.getCode());
@@ -184,5 +185,13 @@ public class Vertex extends AbstractVertex {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
     }
 }

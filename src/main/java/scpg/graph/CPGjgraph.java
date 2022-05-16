@@ -18,18 +18,18 @@ public class CPGjgraph extends DirectedPseudograph<Vertex, CPGEdge> {
         return result;
     }
 
-//    public boolean addVertex(Vertex v) {
-//        if (v == null) {
-//            throw new NullPointerException();
-//        } else if (v.getCode().isEmpty()) {
-//            return false;
-//        } else if (v.getLocation().equals("unknown")) {
-//            return false;
-//        } else {
-//            super.addVertex(v);
-//            return true;
-//        }
-//    }
+    public boolean addVertex(Vertex v) {
+        if (v == null) {
+            throw new NullPointerException();
+        } else if (v.getCode().isEmpty()) {
+            return false;
+        } else if (v.getLocation().equals("unknown")) {
+            return false;
+        } else {
+            boolean added=super.addVertex(v);
+            return added;
+        }
+    }
     public String getFilePath() {
         return filePath;
     }

@@ -48,9 +48,13 @@ public class DotGraphExporter {
         final Map<String, Attribute> result = new HashMap<>();
         final Attribute fillColor = DefaultAttribute.createAttribute("white");
         result.put("location", DefaultAttribute.createAttribute(String.valueOf(component.getLocation())));
+//        result.put("label", DefaultAttribute.createAttribute(component.getLocation()+":"+component.getCode()));
         result.put("label", DefaultAttribute.createAttribute(component.getCode()));
-        result.put("name", DefaultAttribute.createAttribute(component.getName()));
+//        result.put("name", DefaultAttribute.createAttribute(component.getName()));
         result.put("type", DefaultAttribute.createAttribute(component.getType()));
+        result.put("id", DefaultAttribute.createAttribute(component.getId()));
+        result.put("code", DefaultAttribute.createAttribute(component.getCode()));
+        result.put("building", DefaultAttribute.createAttribute(component.getBuilding()));
 //        if (fillColor != null) {
 //            result.put("style", DefaultAttribute.createAttribute("filled"));
 //            result.put("fillcolor", DefaultAttribute.createAttribute(component.getFillColor()));

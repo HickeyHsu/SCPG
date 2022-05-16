@@ -28,20 +28,23 @@ public class CPGjgraphBuilder {
         Map<Node,Integer> ctrlNodes = new LinkedHashMap<>();
 //        Map<String,Node> dataNodes = new LinkedHashMap<>();
         Set<PropertyEdge<Node>> allCFEdges = new HashSet<>();
-        int nodeCounter = 1;
+//        int nodeCounter = 1;
 //        System.out.println(originCPG.getNodes());
         Iterator<Node> origNode = nodeIterator(originCPG);
         while(origNode.hasNext()){
+//            Vertex v;
             Node node = origNode.next();
-            Vertex v =new Vertex(node);
             int id=node.hashCode();
-            v.setId(id);
-            boolean added=cpg.addVertex(v);
-            if(added == false){
-                continue;
-            }
-            nodeCounter++;
-//            String name = "v"+String.valueOf(nodeCounter);
+//            if(allVertexs.containsKey(id)){
+//                v= allVertexs.get(id);
+//            }else{
+//                v = new Vertex(node);
+//                v.setId(id);
+//                if(cpg.addVertex(v)==false)continue;
+//            }
+            Vertex v=genVertex(node,cpg,allVertexs,"CFG");
+            if(v==null)continue;
+
             ctrlNodes.put(node, id);
             allVertexs.put(id,v);
 
@@ -52,19 +55,28 @@ public class CPGjgraphBuilder {
             //抽象语法树
             Iterator<Node> astChildren=node.getAstChildren().iterator();
             while (astChildren.hasNext()) {
+//                Vertex astVertex;
                 Node astNode = astChildren.next();
-                Vertex astVertex = new Vertex(astNode);
-                if(cpg.addVertex(astVertex)==true){
-                    CPGEdge edge = new CPGEdge(CPGEdge.Type.AST);
-                    edge.setStartAndEnd(v, astVertex);
-                    edge.setId(Objects.hash(node, astNode, "AST"));
-                    cpg.addEdge(v, astVertex, edge);
-                }
+                int astid=astNode.hashCode();
+//                if(allVertexs.containsKey(astid)){
+//                    astVertex= allVertexs.get(astid);
+//                }else{
+//                    astVertex = new Vertex(astNode);
+//                    astVertex.setId(astid);
+//                    if(cpg.addVertex(astVertex)==false)continue;
+//                }
+                Vertex astVertex=genVertex(astNode,cpg,allVertexs,"AST");
+                if(astVertex==null)continue;
+                allVertexs.put(astid,astVertex);
+                CPGEdge edge = new CPGEdge(CPGEdge.Type.AST);
+                edge.setStartAndEnd(v, astVertex);
+                edge.setId(Objects.hash(node, astNode, "AST"));
+                cpg.addEdge(v, astVertex, edge);
             }
             //数据流边
             Iterator<Node> prevDFGs=node.getPrevDFG().iterator();
             Iterator<Node> nextDFGs=node.getNextDFG().iterator();
-//            //INCOMING
+            //INCOMING
 //            while (prevDFGs.hasNext()) {
 //                Node prevDFG= prevDFGs.next();
 //                Vertex prevDFGv = new Vertex(prevDFG);
@@ -102,12 +114,20 @@ public class CPGjgraphBuilder {
             }
             Vertex start= allVertexs.get(ctrlNodes.get(eogEdge.getStart()));
             Vertex end= allVertexs.get(ctrlNodes.get(eogEdge.getEnd()));
+            if(start==null||end==null) continue;
             CPGEdge edge = new CPGEdge(CPGEdge.Type.CFG);
             edge.setStartAndEnd(start,end);
             edge.setId(eogEdge.hashCode());
             edge.setName((String) eogEdge.getProperty(Properties.NAME));
             edge.setPropertyEdge(eogEdge);
-            cpg.addEdge(start, end, edge);
+            try{
+                cpg.addEdge(start, end, edge);
+            }catch(Exception e){
+                print(start);
+                print(end);
+                throw e;
+            }
+
         }
 
 
@@ -120,5 +140,21 @@ public class CPGjgraphBuilder {
     }
     public CPGjgraph getCpg() {
         return cpg;
+    }
+    private void print(Object o){
+        System.out.println(o.toString());
+    }
+    private Vertex genVertex(Node node,CPGjgraph cpg,Map<Integer,Vertex> allVertexs,String building){
+        Vertex v;
+        int id=node.hashCode();
+        if(allVertexs.containsKey(id)){
+            v= allVertexs.get(id);
+        }else{
+            v = new Vertex(node);
+            v.setId(id);
+            v.setBuilding(building);
+            if(cpg.addVertex(v)==false)return null;
+        }
+        return v;
     }
 }
