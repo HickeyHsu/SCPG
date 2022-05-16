@@ -48,17 +48,17 @@ public class CPGjgraphBuilder {
             allCFEdges.addAll(prevEOGEdges);
             allCFEdges.addAll(nextEOGEdges);
             //抽象语法树
-            Iterator<Node> astChildren=node.getAstChildren().iterator();
-            while (astChildren.hasNext()) {
-                Node astNode = astChildren.next();
-                Vertex astVertex = new Vertex(astNode);
-                if(cpg.addVertex(astVertex)==true){
-                    CPGEdge edge = new CPGEdge(CPGEdge.Type.AST);
-                    edge.setStartAndEnd(v, astVertex);
-                    edge.setId(Objects.hash(node, astNode, "AST"));
-                    cpg.addEdge(v, astVertex, edge);
-                }
-            }
+//            Iterator<Node> astChildren=node.getAstChildren().iterator();
+//            while (astChildren.hasNext()) {
+//                Node astNode = astChildren.next();
+//                Vertex astVertex = new Vertex(astNode);
+//                if(cpg.addVertex(astVertex)==true){
+//                    CPGEdge edge = new CPGEdge(CPGEdge.Type.AST);
+//                    edge.setStartAndEnd(v, astVertex);
+//                    edge.setId(Objects.hash(node, astNode, "AST"));
+//                    cpg.addEdge(v, astVertex, edge);
+//                }
+//            }
             //数据流边
             Iterator<Node> prevDFGs=node.getPrevDFG().iterator();
             Iterator<Node> nextDFGs=node.getNextDFG().iterator();

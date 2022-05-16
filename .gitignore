@@ -2,3 +2,6 @@
 * text=auto
 */target/
 *.log
+.gradle/
+build
+.idea
