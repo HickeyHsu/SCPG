@@ -4,6 +4,8 @@ import de.fraunhofer.aisec.cpg.graph.Node;
 import de.fraunhofer.aisec.cpg.graph.declarations.TranslationUnitDeclaration;
 import de.fraunhofer.aisec.cpg.graph.declarations.TypedefDeclaration;
 import de.fraunhofer.aisec.cpg.sarif.PhysicalLocation;
+import static de.fraunhofer.aisec.cpg.graph.GraphKt.getLabels;
+
 import org.parboiled.common.StringUtils;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class Vertex extends AbstractVertex {
     private String type;
     private String building;
     private List<Vertex> astVertices=new ArrayList<>();
+    private List<String> annotations=new ArrayList<>();
+    private List<String> label = new ArrayList<>();
     public Vertex(Node node) {
         this.name= StringUtils.escape(node.getName());
         this.code= StringUtils.escape(node.getCode());
@@ -42,7 +46,13 @@ public class Vertex extends AbstractVertex {
         this.argumentIndex= node.getArgumentIndex();
         this.typedefs=node.getTypedefs();
         this.location=PhysicalLocation.locationLink(node.getLocation());
-        this.type=node.getClass().getSimpleName();
+//        List<Annotation> nodeAnnotations=node.getAnnotations();
+//        for(Annotation annot:nodeAnnotations){
+//            annotations.add(annot.toString());
+//        }
+        this.label=getLabels(node);
+        this.label.remove("Node");
+        this.type=this.label.get(0);
         if(location=="unknown"){
             this.line=0;
         }else{
@@ -63,6 +73,14 @@ public class Vertex extends AbstractVertex {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<String> getLabel() {
+        return label;
+    }
+
+    public void setLabel(List<String> label) {
+        this.label = label;
     }
 
     public String getName() {
@@ -219,5 +237,9 @@ public class Vertex extends AbstractVertex {
 
     public void setBuilding(String building) {
         this.building = building;
+    }
+
+    public List<String> getAnnotations() {
+        return annotations;
     }
 }

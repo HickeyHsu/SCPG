@@ -50,11 +50,13 @@ public class DotGraphExporter {
         result.put("location", DefaultAttribute.createAttribute(String.valueOf(component.getLocation())));
 //        result.put("label", DefaultAttribute.createAttribute(component.getLocation()+":"+component.getCode()));
         result.put("label", DefaultAttribute.createAttribute(component.getLine()+":"+component.getCode()));
+//        result.put("label", DefaultAttribute.createAttribute(component.getLabel().toString()));
 //        result.put("name", DefaultAttribute.createAttribute(component.getName()));
         result.put("type", DefaultAttribute.createAttribute(component.getType()));
         result.put("id", DefaultAttribute.createAttribute(component.getId()));
         result.put("line", DefaultAttribute.createAttribute(component.getLine()));
-//        result.put("code", DefaultAttribute.createAttribute(component.getCode()));
+//        result.put("annotations", DefaultAttribute.createAttribute(component.getAnnotations().toString()));
+        result.put("code", DefaultAttribute.createAttribute(component.getCode()));
         result.put("building", DefaultAttribute.createAttribute(component.getBuilding()));
         result.put("style", DefaultAttribute.createAttribute("filled"));
         if (component.getBuilding()=="CFG") {

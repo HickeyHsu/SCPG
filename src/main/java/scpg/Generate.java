@@ -2,9 +2,7 @@ package scpg;
 import de.fraunhofer.aisec.cpg.TranslationConfiguration;
 import de.fraunhofer.aisec.cpg.TranslationManager;
 import de.fraunhofer.aisec.cpg.TranslationResult;
-import de.fraunhofer.aisec.cpg.helpers.Benchmark;
 import static de.fraunhofer.aisec.cpg.graph.GraphKt.getGraph;
-import de.fraunhofer.aisec.cpg.helpers.BenchmarkResults;
 
 
 
@@ -18,27 +16,30 @@ import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 public class Generate{
-    public static void create() throws ExecutionException, InterruptedException {
+    public static void create(String sourceFile,String outputFolder,String outputFile) throws ExecutionException, InterruptedException {
         TranslationConfiguration config =
                 TranslationConfiguration.builder()
-                        .sourceLocations(new File("D:\\idea_workspace\\SCPG\\src\\test\\resources\\cg.cpp"))
+                        .sourceLocations(new File(sourceFile))
                         .defaultPasses()
                         .defaultLanguages()
                         .build();
         TranslationManager analyzer = TranslationManager.builder().config(config).build();
         TranslationResult translationResult = analyzer.analyze().get();
+//        System.out.println(translationResult.getComponents().get(0).getAstChildren());
         System.out.println("test");
-//        translationResult.getBenchmarkResults().print();//打印时间、进程等
         Graph originCPG = getGraph(translationResult);
         CPGjgraphBuilder cpgJgraphBuilder=new CPGjgraphBuilder(originCPG);
         cpgJgraphBuilder.build();
         CPGjgraph cpg =cpgJgraphBuilder.getCpg();
-        DotGraphExporter.exportAsDot(cpg.asDefaultDirectedGraph(),"D:\\idea_workspace\\SCPG\\src\\test\\resources", "cg");;
+        DotGraphExporter.exportAsDot(cpg.asDefaultDirectedGraph(),outputFolder, outputFile);;
 
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        create();
+        String sourceFile="D:\\idea_workspace\\SCPG\\src\\test\\resources\\cg.cpp";
+        String outputFolder ="D:\\idea_workspace\\SCPG\\src\\test\\resources";
+        String outputFile="cg";
+        create(sourceFile,outputFolder,outputFile);
 
     }
 
